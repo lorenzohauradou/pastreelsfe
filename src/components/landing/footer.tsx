@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-center space-x-3">
-                <Image src="/images/logormbg.png" alt="Past Reels" width={32} height={32} />
+                <Image src="/images/prlogo.png" alt="Past Reels" width={32} height={32} />
                 <h3 className="text-lg font-bold text-white">Past Reels</h3>
               </div>
               <div className="text-white/60 text-sm">
@@ -74,7 +74,7 @@ export default function Footer() {
         <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-8">
           <div className="space-y-4 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-3">
-              <Image src="/images/logormbg.png" alt="Past Reels" width={40} height={40} className="sm:w-12 sm:h-12" />
+              <Image src="/images/prlogo.png" alt="Past Reels" width={40} height={40} className="sm:w-12 sm:h-12" />
               <h3 className="text-lg sm:text-xl font-bold text-white">Past Reels</h3>
             </div>
             <div className="text-white/60 text-sm">

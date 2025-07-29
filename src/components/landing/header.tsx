@@ -39,7 +39,7 @@ export default function Header() {
           }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 sm:space-x-3">
-              <Image src="/images/logormbg.png" alt="Past Reels" width={32} height={32} className="sm:w-10 sm:h-10" />
+              <Image src="/images/prlogo.png" alt="Past Reels" width={32} height={32} className="sm:w-10 sm:h-10" />
               <span className="text-lg sm:text-xl font-bold text-white">Past Reels</span>
             </div>
 
