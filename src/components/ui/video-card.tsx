@@ -45,7 +45,7 @@ export function VideoCard({
             onMouseLeave={handleMouseLeave}
         >
             <div className={`w-full h-full rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden bg-[#2a2a2a] border border-[#3a3a3a] shadow-lg sm:shadow-xl lg:shadow-2xl group-hover:shadow-xl sm:group-hover:shadow-2xl lg:group-hover:shadow-4xl transition-all duration-500`}>
-                <div className="w-32 h-56 sm:w-36 sm:h-60 lg:w-[18rem] lg:h-[34rem] overflow-hidden relative">
+                <div className="w-32 h-56 sm:w-36 sm:h-60 lg:w-[12rem] lg:h-[23rem] overflow-hidden relative">
                     {videoSrc.includes('.mp4') ? (
                         <video
                             src={videoSrc}

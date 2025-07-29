@@ -9,10 +9,21 @@ import { Menu, X } from "lucide-react"
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isButtonHighlighted, setIsButtonHighlighted] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
+      const heroButton = document.querySelector('section .bg-yellow-400')
+      if (heroButton) {
+        const heroButtonRect = heroButton.getBoundingClientRect()
+        const headerHeight = 80 // Altezza approssimativa dell'header
+        if (headerHeight > heroButtonRect.top) {
+          setIsButtonHighlighted(true)
+        } else {
+          setIsButtonHighlighted(false)
+        }
+      }
     }
 
     window.addEventListener("scroll", handleScroll)
@@ -22,7 +33,7 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
       <div className={`flex justify-center px-4 sm:px-6 lg:px-8 transition-all duration-300 ${isScrolled ? 'py-2 sm:py-3' : 'py-3 sm:py-4'}`}>
-        <div className={`bg-black/10 border border-white/20 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 shadow-lg backdrop-blur-sm transition-all duration-300 w-full max-w-7xl ${isScrolled
+        <div className={`bg-black/10 border border-white/20 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 shadow-lg backdrop-blur-sm transition-all duration-300 w-full max-w-3xl ${isScrolled
           ? 'rounded-2xl sm:rounded-3xl'
           : 'rounded-b-2xl sm:rounded-b-3xl'
           }`}>
@@ -43,12 +54,15 @@ export default function Header() {
                 <a href="#" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
                   Affiliate Program
                 </a>
-                <Badge className="bg-yellow-500 text-black text-xs font-semibold px-2 py-1">New</Badge>
+                <Badge className={`bg-yellow-300 text-black ${isButtonHighlighted ? 'bg-white' : 'bg-yellow-500'} text-xs font-semibold px-2 py-1`}>New</Badge>
               </div>
             </nav>
 
             <div className="flex items-center space-x-3">
-              <Button className="bg-white text-black hover:bg-white/90 font-medium px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base">
+              <Button className={`px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base transition-all ${isButtonHighlighted
+                ? 'bg-yellow-400 text-black hover:bg-yellow-300 font-semibold duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black'
+                : 'bg-white text-black hover:bg-white/90 font-medium duration-300'
+                }`}>
                 Get Started
               </Button>
 

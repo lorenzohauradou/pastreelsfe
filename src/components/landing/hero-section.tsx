@@ -7,16 +7,16 @@ import { Play } from "lucide-react"
 export default function HeroSection() {
   return (
     <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-8 sm:pb-12 lg:pt-32 lg:pb-20 mt-12 sm:mt-16">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
-            <Badge variant="outline" className="border-yellow-400/30 text-yellow-400 bg-yellow-400/10 font-medium inline-flex items-center text-sm sm:text-lg">
+            <Badge variant="outline" className="border-yellow-400/30 text-yellow-400 bg-yellow-400/10 font-medium inline-flex items-center text-sm">
               <span className="w-4 h-4 sm:w-6 sm:h-6 bg-yellow-400 rounded-full mr-2 animate-pulse"></span>
               Powered by GPT-4.5
             </Badge>
 
             <div className="space-y-4 sm:space-y-6">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[0.9] tracking-tight text-white">
+              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-6xl font-bold leading-[0.9] tracking-tight text-white">
                 Your <span className="text-yellow-400">Time Machine</span>
                 <br />
                 for <span className="text-yellow-400">Viral Videos</span>

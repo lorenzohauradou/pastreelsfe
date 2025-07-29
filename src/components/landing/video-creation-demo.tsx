@@ -5,7 +5,7 @@ import { Play, Volume2 } from "lucide-react"
 export default function VideoCreationDemo() {
   return (
     <section className="relative z-10 px-6 lg:px-8 py-20">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div className="space-y-4">
