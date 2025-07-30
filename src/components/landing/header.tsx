@@ -38,16 +38,16 @@ export default function Header() {
           : 'rounded-b-2xl sm:rounded-b-3xl'
           }`}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            <a href="/" className="flex items-center space-x-2 sm:space-x-3">
               <Image src="/images/prlogo.png" alt="Past Reels" width={32} height={32} className="sm:w-10 sm:h-10" />
               <span className="text-lg sm:text-xl font-bold text-white">Past Reels</span>
-            </div>
+            </a>
 
             <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
               <a href="#pricing" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
                 Pricing
               </a>
-              <a href="#" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
+              <a href="/blog" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
                 Blog
               </a>
               <div className="flex items-center space-x-2">
@@ -59,12 +59,14 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center space-x-3">
-              <Button className={`px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base transition-all ${isButtonHighlighted
-                ? 'bg-yellow-400 text-black hover:bg-yellow-300 font-semibold duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black'
-                : 'bg-white text-black hover:bg-white/90 font-medium duration-300'
-                }`}>
-                Get Started
-              </Button>
+              <a href="/generate-video">
+                <Button className={`px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base transition-all ${isButtonHighlighted
+                  ? 'bg-yellow-400 text-black hover:bg-yellow-300 font-semibold duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black'
+                  : 'bg-white text-black hover:bg-white/90 font-medium duration-300'
+                  }`}>
+                  Get Started
+                </Button>
+              </a>
 
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -81,7 +83,7 @@ export default function Header() {
                 <a href="#" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
                   Pricing
                 </a>
-                <a href="#" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
+                <a href="/blog" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
                   Blog
                 </a>
                 <div className="flex items-center space-x-2">
