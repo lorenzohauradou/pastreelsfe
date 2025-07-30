@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://pastreels.com/sitemap.xml
+
+# Block access to admin or sensitive areas (if you have any)
+# Disallow: /admin
+# Disallow: /api
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /

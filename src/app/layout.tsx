@@ -4,9 +4,82 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Past Reels',
-  description: 'Past Reels',
+  title: 'Past Reels - AI Video Generator | Create Cinematic Historical Videos',
+  description: 'Transform your ideas into stunning cinematic videos with historical aesthetics. From the 1950s to Ancient Rome, create viral videos powered by AI. Start your time travel journey today.',
+  keywords: ['AI video generator', 'historical videos', 'cinematic videos', 'video creation', 'time travel videos', 'vintage aesthetics', 'viral videos', 'GPT-4 powered'],
+  authors: [{ name: 'Past Reels' }],
+  creator: 'Past Reels',
+  publisher: 'Past Reels',
   generator: 'Past Reels',
+  applicationName: 'Past Reels',
+  referrer: 'origin-when-cross-origin',
+  category: 'Technology',
+  classification: 'AI Video Generation Platform',
+
+  // Open Graph metadata for social sharing
+  openGraph: {
+    title: 'Past Reels - Your Time Machine for Viral Videos',
+    description: 'Create stunning cinematic videos with historical aesthetics. From the 1950s to Ancient Rome, turn your ideas into viral content.',
+    url: 'https://pastreels.com', // Replace with your actual domain
+    siteName: 'Past Reels',
+    type: 'website',
+    locale: 'en_US',
+    images: [
+      {
+        url: '/images/pastreelslogo.png', // Using your existing logo
+        width: 1200,
+        height: 630,
+        alt: 'Past Reels - AI Video Generator',
+        type: 'image/png',
+      }
+    ],
+  },
+
+  // Twitter Card metadata
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Past Reels - Your Time Machine for Viral Videos',
+    description: 'Create stunning cinematic videos with historical aesthetics. Powered by AI.',
+    creator: '@pastreels', // Replace with your actual Twitter handle
+    site: '@pastreels', // Replace with your actual Twitter handle
+    images: ['/images/pastreelslogo.png'],
+  },
+
+  // Favicon and icons configuration
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.ico', type: 'image/x-icon' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico', // You might want to create a proper apple-touch-icon later
+  },
+
+  // Additional metadata
+  metadataBase: new URL('https://pastreels.com'), // Replace with your actual domain
+  alternates: {
+    canonical: 'https://pastreels.com', // Replace with your actual domain
+  },
+
+  // Robots directive
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+
+  // Additional verification (add these when you set up Google Search Console, etc.)
+  // verification: {
+  //   google: 'your-google-verification-code',
+  //   yandex: 'your-yandex-verification-code',
+  //   yahoo: 'your-yahoo-verification-code',
+  // },
 }
 
 export default function RootLayout({
