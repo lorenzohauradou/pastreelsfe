@@ -172,12 +172,22 @@ export async function pollTaskStatus(
   interval: number = 3000
 ): Promise<TaskStatus> {
   let attempts = 0
+  let lastProgress = -1
+  let lastMessage = ''
   
   return new Promise((resolve, reject) => {
     const poll = async () => {
       try {
         attempts++
         const status = await getTaskStatus(taskId)
+        
+        // Reset timeout counter if progress changed or message changed (new image being generated)
+        if (status.progress !== lastProgress || status.message !== lastMessage) {
+          console.log(`Progress updated: ${lastProgress}% -> ${status.progress}% | Message: "${status.message}"`)
+          attempts = 0  // Reset timeout counter
+          lastProgress = status.progress || -1
+          lastMessage = status.message || ''
+        }
         
         if (onProgress) {
           onProgress(status)
@@ -188,12 +198,18 @@ export async function pollTaskStatus(
         } else if (status.status === 'failed') {
           reject(new Error(status.message || 'Task failed'))
         } else if (attempts >= maxAttempts) {
-          reject(new Error('Task polling timeout'))
+          reject(new Error(`Task polling timeout - no progress for ${Math.round(maxAttempts * interval / 1000 / 60)} minutes. Last progress: ${lastProgress}%`))
         } else {
           setTimeout(poll, interval)
         }
       } catch (error) {
-        reject(error)
+        // Add retry logic for network errors
+        if (attempts < maxAttempts) {
+          console.warn(`Polling attempt ${attempts} failed, retrying...`, error)
+          setTimeout(poll, interval)
+        } else {
+          reject(error)
+        }
       }
     }
     

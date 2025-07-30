@@ -229,7 +229,25 @@ function ImageGeneration({
 
         } catch (error) {
             console.error('Error during generation:', error)
-            alert('Errore durante la generazione. Riprova.')
+
+            // Check if we have partial results even if polling timed out
+            try {
+                const assets = await (await import("./lib/api")).getProjectAssets(project.id, 'image')
+                if (assets && assets.length > 0) {
+                    alert(`Generazione parzialmente completata: ${assets.length} immagini generate. Puoi continuare con quelle disponibili.`)
+                    onComplete(assets)
+                    return
+                }
+            } catch (assetsError) {
+                console.error('Error checking for partial assets:', assetsError)
+            }
+
+            // Show appropriate error message
+            const errorMessage = (error as Error)?.message?.includes('timeout')
+                ? 'La generazione sta richiedendo più tempo del previsto. Alcune immagini potrebbero essere state create. Ricarica la pagina per controllare.'
+                : 'Errore durante la generazione. Riprova.'
+
+            alert(errorMessage)
         }
     }
 
@@ -248,7 +266,7 @@ function ImageGeneration({
                 <div className="space-y-3">
                     <Progress value={progress} className="w-full" />
                     <p className="text-center text-sm text-gray-400">
-                        Questo processo può richiedere alcuni minuti
+                        Questo processo può richiedere alcuni minuti. OpenAI GPT Image sta creando immagini di alta qualità.
                     </p>
                 </div>
             )}
