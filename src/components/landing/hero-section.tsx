@@ -27,13 +27,15 @@ export default function HeroSection() {
               </p>
             </div>
 
-            <Button
-              size="lg"
-              className="bg-yellow-400 text-black hover:bg-yellow-300 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black"
-            >
-              <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              Start Time Traveling →
-            </Button>
+            <a href="/generate-video">
+              <Button
+                size="lg"
+                className="bg-yellow-400 text-black hover:bg-yellow-300  px-6 sm:px-8 mt-6 text-base sm:text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black"
+              >
+                <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                Start Time Traveling →
+              </Button>
+            </a>
           </div>
 
           <div className="relative mt-8 lg:mt-0">

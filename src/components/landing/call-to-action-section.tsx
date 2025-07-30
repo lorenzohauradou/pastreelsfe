@@ -12,12 +12,14 @@ export default function CallToActionSection() {
               Create historically immersive videos that transport your audience to any era.
             </p>
 
-            <Button
-              size="lg"
-              className="bg-white text-black hover:bg-white/90 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105"
-            >
-              Start Your Time Journey
-            </Button>
+            <a href="/generate-video">
+              <Button
+                size="lg"
+                className="bg-white text-black hover:bg-white/90 px-6 sm:px-8 mt-6 text-base sm:text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105"
+              >
+                Start Your Time Journey
+              </Button>
+            </a>
           </div>
         </div>
       </div>
