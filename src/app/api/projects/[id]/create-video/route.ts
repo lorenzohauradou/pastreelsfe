@@ -10,12 +10,18 @@ export async function POST(
     const { id: projectId } = await params
     const body = await request.json()
     
+    // Add project_id to the request body as required by the backend
+    const requestBody = {
+      ...body,
+      project_id: parseInt(projectId)
+    }
+    
     const response = await fetch(`${BACKEND_URL}/api/projects/${projectId}/create-video`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestBody),
     })
 
     if (!response.ok) {

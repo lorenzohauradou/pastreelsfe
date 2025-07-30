@@ -59,6 +59,12 @@ export interface TaskStatus {
   status: string
   message?: string
   progress?: number
+  result?: {
+    final_video_url?: string
+    final_task_id?: string
+    video_assets?: any[]
+    [key: string]: any
+  }
 }
 
 export interface CreateVideoRequest {

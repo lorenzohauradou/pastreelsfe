@@ -18,6 +18,7 @@ export default function GenerateVideoPage() {
     const [progress, setProgress] = useState(0)
     const [isGenerating, setIsGenerating] = useState(false)
     const [generatedAssets, setGeneratedAssets] = useState<Asset[]>([])
+    const [selectedAssets, setSelectedAssets] = useState<Asset[]>([])
 
     const handleProjectCreated = (newProject: Project) => {
         setProject(newProject)
@@ -40,6 +41,7 @@ export default function GenerateVideoPage() {
     }
 
     const handleAssetsSelected = (selectedAssets: Asset[]) => {
+        setSelectedAssets(selectedAssets)
         setCurrentStep("video")
     }
 
@@ -62,6 +64,7 @@ export default function GenerateVideoPage() {
         setProgress(0)
         setIsGenerating(false)
         setGeneratedAssets([])
+        setSelectedAssets([])
     }
 
     return (
@@ -133,6 +136,7 @@ export default function GenerateVideoPage() {
                     {currentStep === "video" && project && (
                         <VideoCreation
                             projectId={project.id}
+                            selectedAssets={selectedAssets}
                             onVideoComplete={handleVideoComplete}
                         />
                     )}

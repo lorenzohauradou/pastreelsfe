@@ -7,49 +7,117 @@ import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Textarea } from "@/src/components/ui/textarea"
 import { Progress } from "@/src/components/ui/progress"
-import { createVideo, pollTaskStatus } from "../lib/api"
+import { createVideo, pollTaskStatus, Asset } from "../lib/api"
 
 interface VideoCreationProps {
     projectId: number
+    selectedAssets: Asset[]
     onVideoComplete: (videoUrl: string) => void
 }
 
-export default function VideoCreation({ projectId, onVideoComplete }: VideoCreationProps) {
+export default function VideoCreation({ projectId, selectedAssets, onVideoComplete }: VideoCreationProps) {
     const [isCreating, setIsCreating] = useState(false)
     const [progress, setProgress] = useState(0)
     const [overlayText, setOverlayText] = useState("")
     const [hasStarted, setHasStarted] = useState(false)
+    const [statusMessage, setStatusMessage] = useState("")
 
     const startVideoCreation = async () => {
+        let taskResponse: any = null
         try {
+            if (selectedAssets.length === 0) {
+                alert('Nessun asset selezionato. Torna indietro e seleziona almeno un\'immagine.')
+                return
+            }
+
             setIsCreating(true)
             setHasStarted(true)
+            setStatusMessage("")
 
             // Create video with selected assets
             const taskResponse = await createVideo(projectId, {
-                selected_asset_ids: [1, 2, 3], // This should come from selected assets
+                selected_asset_ids: selectedAssets.map(asset => asset.id),
                 overlay_text: overlayText || undefined
             })
 
-            // Poll for completion
-            await pollTaskStatus(
+            // Poll for completion (timeout aumentato per la scrittura video)
+            console.log(`Starting video creation polling for task: ${taskResponse.task_id}`)
+
+            const finalStatus = await pollTaskStatus(
                 taskResponse.task_id,
                 (status) => {
+                    console.log(`Task status update:`, status)
                     if (status.progress) {
                         setProgress(status.progress)
                     }
-                }
+                    // Aggiorna messaggio se disponibile dal backend
+                    if (status.message) {
+                        setStatusMessage(status.message)
+                        console.log(`Status message: ${status.message}`)
+                    }
+                },
+                120, // 120 tentativi (era 60)
+                3000 // ogni 3 secondi = 6 minuti totali
             )
 
-            // Simulate video completion
-            const mockVideoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-            onVideoComplete(mockVideoUrl)
+            console.log(`Final status received:`, finalStatus)
+            console.log(`finalStatus.result:`, finalStatus.result)
+            console.log(`final_task_id found:`, finalStatus.result?.final_task_id)
+
+            // Check if we have a final video URL directly
+            if (finalStatus.status === 'completed' && finalStatus.result?.final_video_url) {
+                console.log(`Found direct video URL: ${finalStatus.result.final_video_url}`)
+                onVideoComplete(finalStatus.result.final_video_url)
+            }
+            // Check if we need to continue polling a final video task
+            else if (finalStatus.status === 'completed' && finalStatus.result?.final_task_id) {
+                console.log(`Switching to final video task: ${finalStatus.result.final_task_id}`)
+                setStatusMessage("Creazione video finale in corso...")
+
+                // Poll the final video creation task
+                const finalVideoStatus = await pollTaskStatus(
+                    finalStatus.result.final_task_id,
+                    (status) => {
+                        console.log(`Final video task status:`, status)
+                        if (status.progress) {
+                            setProgress(status.progress)
+                        }
+                        if (status.message) {
+                            setStatusMessage(status.message)
+                            console.log(`Final video status message: ${status.message}`)
+                        }
+                    },
+                    120, // 120 tentativi
+                    3000 // ogni 3 secondi = 6 minuti totali
+                )
+
+                console.log(`Final video task completed:`, finalVideoStatus)
+
+                if (finalVideoStatus.status === 'completed' && finalVideoStatus.result?.final_video_url) {
+                    onVideoComplete(finalVideoStatus.result.final_video_url)
+                } else {
+                    throw new Error('Video finale non disponibile nel task finale: ' + (finalVideoStatus.message || 'Errore sconosciuto'))
+                }
+            }
+            else {
+                throw new Error('Video finale non disponibile: ' + (finalStatus.message || 'Errore sconosciuto'))
+            }
 
         } catch (error) {
             console.error('Error creating video:', error)
-            alert('Errore durante la creazione del video. Riprova.')
+            const err = error as Error
+            console.error('Error details:', {
+                message: err.message,
+                stack: err.stack,
+                taskId: taskResponse?.task_id
+            })
+
+            // Messaggio di errore più dettagliato per il debug
+            const errorMsg = err.message || 'Errore sconosciuto'
+            alert(`Errore durante la creazione del video: ${errorMsg}\n\nControlla la console per dettagli.`)
         } finally {
             setIsCreating(false)
+            setStatusMessage("")
         }
     }
 
@@ -61,6 +129,9 @@ export default function VideoCreation({ projectId, onVideoComplete }: VideoCreat
                 </CardTitle>
                 <p className="text-center text-gray-400">
                     Personalizza il tuo video con testo e musica
+                </p>
+                <p className="text-center text-sm text-blue-400">
+                    {selectedAssets.length} immagini selezionate
                 </p>
             </CardHeader>
             <CardContent>
@@ -140,10 +211,14 @@ export default function VideoCreation({ projectId, onVideoComplete }: VideoCreat
                                     <div className="space-y-3">
                                         <Progress value={progress} className="w-full" />
                                         <p className="text-center text-sm text-gray-400">
-                                            {progress < 30 && "Preparazione scene..."}
-                                            {progress >= 30 && progress < 60 && "Generazione transizioni..."}
-                                            {progress >= 60 && progress < 90 && "Applicazione effetti..."}
-                                            {progress >= 90 && "Finalizzazione video..."}
+                                            {statusMessage || (
+                                                <>
+                                                    {progress < 30 && "Preparazione scene..."}
+                                                    {progress >= 30 && progress < 60 && "Generazione transizioni..."}
+                                                    {progress >= 60 && progress < 90 && "Applicazione effetti..."}
+                                                    {progress >= 90 && "Finalizzazione video..."}
+                                                </>
+                                            )}
                                         </p>
                                     </div>
                                 )}
