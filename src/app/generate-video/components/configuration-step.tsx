@@ -121,18 +121,6 @@ export default function ConfigurationStep({ selectedEra, onConfigurationComplete
                 </div>
 
                 <div className="space-y-12">
-                    {/* Project Title */}
-                    <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-xl">
-                        <h3 className="text-xl font-bold text-white mb-4">Project Title (Optional)</h3>
-                        <input
-                            type="text"
-                            value={projectTitle}
-                            onChange={(e) => setProjectTitle(e.target.value)}
-                            placeholder={`${selectedEra.display_name} Video`}
-                            className="w-full bg-black/30 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-yellow-400 focus:outline-none transition-colors"
-                        />
-                    </div>
-
                     {/* Duration Selection */}
                     <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-xl">
                         <div className="flex items-center mb-6">
@@ -205,36 +193,14 @@ export default function ConfigurationStep({ selectedEra, onConfigurationComplete
                         </div>
                     </div>
 
-                    {/* Preview */}
-                    <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-xl">
-                        <h3 className="text-xl font-bold text-white mb-6">Configuration Summary</h3>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                            <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
-                                <div className="text-lg font-bold text-yellow-400">{selectedEra.display_name}</div>
-                                <div className="text-sm text-gray-400">Selected Era</div>
-                            </div>
-                            <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
-                                <div className="text-lg font-bold text-yellow-400">{selectedDuration}s</div>
-                                <div className="text-sm text-gray-400">Duration</div>
-                            </div>
-                            <div className="text-center p-4 bg-white/5 rounded-xl border border-white/10">
-                                <div className="text-lg font-bold text-yellow-400">
-                                    {formatOptions.find(f => f.ratio === selectedRatio)?.name}
-                                </div>
-                                <div className="text-sm text-gray-400">Format</div>
-                            </div>
-                        </div>
-
-                        <Button
-                            size="lg"
-                            onClick={handleContinue}
-                            disabled={isCreating}
-                            className="w-full bg-yellow-400 text-black hover:bg-yellow-300 px-8 py-4 text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                        >
-                            {isCreating ? "Creating..." : "Start Creating Video →"}
-                        </Button>
-                    </div>
+                    <Button
+                        size="lg"
+                        onClick={handleContinue}
+                        disabled={isCreating}
+                        className="w-full bg-yellow-400 text-black hover:bg-yellow-300 px-8 py-4 text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    >
+                        {isCreating ? "Creating..." : "Start Creating Video →"}
+                    </Button>
                 </div>
             </div>
         </section>
