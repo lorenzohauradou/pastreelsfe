@@ -64,7 +64,7 @@ const plans = [
 
 export default function PricingSection() {
     return (
-        <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <section id="pricing" className="relative z-10 px-4 sm:px-6 lg:px-8 py-16 sm:py-20 scroll-mt-20">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="text-center space-y-4 sm:space-y-6 mb-16 sm:mb-20">

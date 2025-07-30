@@ -44,7 +44,7 @@ export default function Header() {
             </div>
 
             <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
-              <a href="#" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
+              <a href="#pricing" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
                 Pricing
               </a>
               <a href="#" className="text-white/90 hover:text-white transition-colors text-sm font-medium">
