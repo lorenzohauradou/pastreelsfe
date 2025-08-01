@@ -450,7 +450,7 @@ export default function GenerationFlow({
 
                             {/* Messaggio informativo */}
                             <p className="text-sm text-gray-400 max-w-md mx-auto leading-relaxed animate-in fade-in-50 duration-500" style={{ animationDelay: '600ms' }}>
-                                We're creating high-quality cinematic content using AI.
+                                We're creating your high-quality AI cinematic content.
                             </p>
                         </div>
                     </div>
