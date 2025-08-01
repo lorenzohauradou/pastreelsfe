@@ -85,6 +85,7 @@ async function apiCall<T>(
       'Content-Type': 'application/json',
       ...options.headers,
     },
+    signal: AbortSignal.timeout(30000), // 30 secondi timeout
   }
 
   const response = await fetch(url, { ...defaultOptions, ...options })
@@ -97,13 +98,45 @@ async function apiCall<T>(
   return response.json()
 }
 
+async function apiCallWithRetry<T>(
+  endpoint: string, 
+  options: RequestInit = {},
+  maxRetries = 3,
+  retryDelay = 1000
+): Promise<T> {
+  let lastError: Error
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await apiCall<T>(endpoint, options)
+    } catch (error) {
+      lastError = error as Error
+      console.warn(`API call attempt ${attempt} failed:`, error)
+      
+      // Non fare retry per errori 4xx (client errors)
+      if (error instanceof Error && error.message.includes('API Error 4')) {
+        throw error
+      }
+      
+      // Se non è l'ultimo tentativo, aspetta prima di riprovare
+      if (attempt < maxRetries) {
+        console.log(`Retrying in ${retryDelay}ms... (attempt ${attempt + 1}/${maxRetries})`)
+        await new Promise(resolve => setTimeout(resolve, retryDelay))
+        retryDelay *= 1.5 // Backoff esponenziale
+      }
+    }
+  }
+  
+  throw lastError!
+}
+
 // API Functions
 
 /**
  * Get available options for creating a project
  */
 export async function getAvailableOptions(): Promise<AvailableOptions> {
-  return apiCall<AvailableOptions>('/projects/options')
+  return apiCallWithRetry<AvailableOptions>('/projects/options')
 }
 
 /**
