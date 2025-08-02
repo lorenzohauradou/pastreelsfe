@@ -36,7 +36,7 @@ export default function GenerationFlow({
     // Auto-switch to completed if we have a video URL (failsafe) - ONLY if not already completed
     useEffect(() => {
         if (project?.final_video_url && currentPhase !== "completed" && currentPhase !== "error") {
-            console.log("🎯 Auto-switching to completed because video URL is available:", project.final_video_url)
+            console.log("Auto-switching to completed because video URL is available:", project.final_video_url)
             setCurrentPhase("completed")
             // Set stable video URL to prevent it from disappearing
             if (!stableVideoUrl) {
@@ -48,7 +48,7 @@ export default function GenerationFlow({
     // Set stable video URL whenever we get a video URL (prevents loss during re-renders)
     useEffect(() => {
         if (project?.final_video_url && !stableVideoUrl) {
-            console.log("🔒 Setting stable video URL:", project.final_video_url)
+            console.log("Setting stable video URL:", project.final_video_url)
             setStableVideoUrl(project.final_video_url)
         }
     }, [project?.final_video_url, stableVideoUrl])
@@ -57,13 +57,13 @@ export default function GenerationFlow({
 
         // ONLY check if we're in completed phase, don't have video URL, AND project exists
         if (currentPhase === "completed" && !project?.final_video_url && project?.id) {
-            console.log("🔄 Starting periodic check for video URL...")
+            console.log("Starting periodic check for video URL...")
 
             intervalId = setInterval(async () => {
                 try {
                     // Double-check that we still don't have the video URL before making API call
                     if (project?.final_video_url) {
-                        console.log("🔄 Video URL already exists, stopping periodic check")
+                        console.log("Video URL already exists, stopping periodic check")
                         if (intervalId) clearInterval(intervalId)
                         return
                     }
@@ -71,14 +71,14 @@ export default function GenerationFlow({
                     const { getProject } = await import("../lib/api")
                     const updatedProject = await getProject(project.id)
 
-                    console.log("🔄 Periodic check - Updated project:", {
+                    console.log("Periodic check - Updated project:", {
                         id: updatedProject.id,
                         status: updatedProject.status,
                         final_video_url: updatedProject.final_video_url
                     })
 
                     if (updatedProject.final_video_url) {
-                        console.log("✅ Video URL found during periodic check!")
+                        console.log("Video URL found during periodic check!")
                         setProject(updatedProject)
                         // Set stable video URL to prevent loss
                         if (!stableVideoUrl) {
@@ -99,7 +99,7 @@ export default function GenerationFlow({
         // Cleanup interval when component unmounts or conditions change
         return () => {
             if (intervalId) {
-                console.log("🔄 Clearing periodic check interval")
+                console.error("Clearing periodic check interval")
                 clearInterval(intervalId)
             }
         }
@@ -108,17 +108,15 @@ export default function GenerationFlow({
     useEffect(() => {
         // Prevent double initialization with ref flag
         if (!hasStarted.current) {
-            console.log("🚀 Starting project creation (first time)")
             hasStarted.current = true
             startProjectCreation()
         } else {
-            console.log("⚠️ Prevented duplicate project creation")
+            console.log("Prevented duplicate project creation")
         }
     }, [])
 
     const startProjectCreation = async () => {
         try {
-            console.log("📋 Creating project with config:", { era: selectedEra.preset_name, duration: projectConfig.duration, ratio: projectConfig.ratio })
             setCurrentMessage("Creating your project...")
             const newProject = await createProject({
                 title: projectConfig.title,
@@ -127,7 +125,6 @@ export default function GenerationFlow({
                 ratio: projectConfig.ratio
             })
 
-            console.log("✅ Project created successfully:", newProject.id)
             setProject(newProject)
             onProjectCreated(newProject)
             setCurrentPhase("generating-images")
@@ -238,11 +235,8 @@ export default function GenerationFlow({
                     setCurrentMessage(status.message || "Generating video...")
                 }
             )
-
-            // Check if we have a final_task_id for the actual video creation
             if (finalStatus.result?.final_task_id) {
                 setCurrentMessage("Creating final video...")
-                console.log("Polling final task:", finalStatus.result.final_task_id)
 
                 const finalTaskResult = await pollTaskStatus(
                     finalStatus.result.final_task_id,
@@ -252,10 +246,7 @@ export default function GenerationFlow({
                     }
                 )
 
-                console.log("Final task completed:", finalTaskResult)
-
                 if (finalTaskResult.result?.final_video_url) {
-                    console.log("✅ Final video URL from task:", finalTaskResult.result.final_video_url)
                     setStableVideoUrl(finalTaskResult.result.final_video_url)
                     setCurrentPhase("completed")
                     setCurrentMessage("Video ready!")
@@ -268,7 +259,6 @@ export default function GenerationFlow({
                 const updatedProject = await getProject(project!.id)
 
                 if (updatedProject.final_video_url) {
-                    console.log("✅ Final video from project:", updatedProject.final_video_url)
                     setProject(updatedProject)
                     setStableVideoUrl(updatedProject.final_video_url)
                     setCurrentPhase("completed")
@@ -308,7 +298,7 @@ export default function GenerationFlow({
 
     const phaseInfo = getPhaseInfo()
 
-    // Simplified rendering logic
+    // rendering logic
     const hasVideoReady = !!(project?.final_video_url || stableVideoUrl)
     const videoUrlToUse = stableVideoUrl || project?.final_video_url
     const isError = currentPhase === "error"
@@ -316,17 +306,6 @@ export default function GenerationFlow({
     const isReviewing = currentPhase === "reviewing-images" && !hasVideoReady
     const isGenerating = !isError && !isCompleted && !isReviewing
 
-    console.log("🎬 Render decisions:", {
-        currentPhase,
-        hasVideoReady,
-        videoUrl: project?.final_video_url,
-        stableVideoUrl,
-        videoUrlToUse,
-        isError,
-        isCompleted,
-        isReviewing,
-        isGenerating
-    })
 
     const handleStartOver = () => {
         // Reset all local states completely
@@ -355,7 +334,6 @@ export default function GenerationFlow({
                     </p>
                 </div>
 
-                {/* Error State */}
                 {isError && (
                     <div className="bg-red-900/40 backdrop-blur-sm border border-red-500/30 rounded-2xl p-8 shadow-xl text-center">
                         <X className="w-16 h-16 text-red-400 mx-auto mb-4" />
@@ -380,40 +358,30 @@ export default function GenerationFlow({
                     </div>
                 )}
 
-                {/* Generation Progress */}
                 {isGenerating && (
                     <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-xl animate-in fade-in-50 slide-in-from-bottom-4 duration-700">
                         <div className="text-center space-y-6">
                             <div className="w-24 h-24 mx-auto relative">
-                                {/* Particelle animate */}
                                 <div className="absolute inset-0">
                                     <div className="absolute top-2 right-6 w-1 h-1 bg-yellow-400 rounded-full animate-ping" style={{ animationDelay: '0s' }}></div>
                                     <div className="absolute bottom-4 left-4 w-1 h-1 bg-purple-400 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
                                     <div className="absolute top-6 left-2 w-1 h-1 bg-blue-400 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
                                     <div className="absolute bottom-2 right-3 w-1 h-1 bg-green-400 rounded-full animate-ping" style={{ animationDelay: '1.5s' }}></div>
                                 </div>
-
-                                {/* Anelli concentrici animati */}
                                 <div className="absolute inset-0 rounded-full border-2 border-yellow-400/20 animate-spin" style={{ animationDuration: '3s' }}></div>
                                 <div className="absolute inset-2 rounded-full border border-purple-400/30 animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }}></div>
-
-                                {/* Sfondo sfocato migliorato */}
                                 <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/30 to-purple-600/30 rounded-full blur-xl animate-pulse"></div>
-
-                                {/* Contenitore principale */}
                                 <div className="relative w-full h-full bg-black/60 backdrop-blur-sm rounded-full border border-white/30 flex items-center justify-center shadow-2xl">
                                     <Sparkles className="w-12 h-12 text-yellow-400 animate-pulse drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 8px rgba(251, 191, 36, 0.6))' }} />
                                 </div>
                             </div>
 
-                            {/* Titoli con animazioni */}
                             <div className="animate-in fade-in-50 slide-in-from-bottom-2 duration-500" style={{ animationDelay: '200ms' }}>
                                 <h3 className="text-2xl font-bold text-white mb-2 bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
                                     {selectedEra.display_name}
                                 </h3>
                                 <p className="text-gray-300 transition-all duration-300">{currentMessage}</p>
                             </div>
-
                             {/* Barra di progresso */}
                             <div className="space-y-3 animate-in fade-in-50 slide-in-from-bottom-2 duration-500" style={{ animationDelay: '400ms' }}>
                                 <div className="relative">
@@ -421,7 +389,6 @@ export default function GenerationFlow({
                                         value={progress}
                                         className="w-full h-4 bg-gray-800/50 border border-white/10 rounded-full overflow-hidden shadow-inner"
                                     />
-                                    {/* Overlay con gradiente dinamico */}
                                     <div
                                         className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out"
                                         style={{
@@ -432,7 +399,6 @@ export default function GenerationFlow({
                                                         '#eab308, #22c55e'})`
                                         }}
                                     ></div>
-                                    {/* Effetto riflesso */}
                                     <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-full"></div>
                                 </div>
 
@@ -447,8 +413,6 @@ export default function GenerationFlow({
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Messaggio informativo */}
                             <p className="text-sm text-gray-400 max-w-md mx-auto leading-relaxed animate-in fade-in-50 duration-500" style={{ animationDelay: '600ms' }}>
                                 We're creating your high-quality AI cinematic content.
                             </p>
@@ -456,7 +420,6 @@ export default function GenerationFlow({
                     </div>
                 )}
 
-                {/* Image Review & Selection */}
                 {isReviewing && (
                     <div className="space-y-8">
                         <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-xl">
@@ -520,7 +483,6 @@ export default function GenerationFlow({
                     </div>
                 )}
 
-                {/* Completion */}
                 {isCompleted && (
                     <div className="bg-black/60 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-xl">
                         <div className="text-center space-y-6">
@@ -536,7 +498,6 @@ export default function GenerationFlow({
                                 <p className="text-gray-400 mt-2">Your cinematic {selectedEra.display_name} video is ready.</p>
                             </div>
 
-                            {/* Always try to show video if URL exists */}
                             {videoUrlToUse ? (
                                 <div className="max-w-sm mx-auto">
                                     <div className="relative rounded-lg overflow-hidden shadow-2xl bg-black/40">
@@ -591,7 +552,6 @@ export default function GenerationFlow({
                     </div>
                 )}
 
-                {/* Emergency Fallback - Prevent Black Screen */}
                 {!isGenerating && !isReviewing && !isCompleted && !isError && (
                     <div className="bg-yellow-900/40 backdrop-blur-sm border border-yellow-500/30 rounded-2xl p-8 shadow-xl text-center">
                         <div className="text-center space-y-4">
