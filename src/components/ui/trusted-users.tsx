@@ -9,28 +9,28 @@ export function TrustedUsers() {
             <div className="flex items-center space-x-3 sm:space-x-4">
                 <div className="flex -space-x-2 sm:-space-x-3">
                     <Image
-                        src="/placeholder-user.jpg"
+                        src="/icons/trusted1.png"
                         alt="User"
                         width={36}
                         height={36}
                         className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white"
                     />
                     <Image
-                        src="/placeholder-user.jpg"
+                        src="/icons/trusted2.png"
                         alt="User"
                         width={36}
                         height={36}
                         className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white"
                     />
                     <Image
-                        src="/placeholder-user.jpg"
+                        src="/icons/trusted3.png"
                         alt="User"
                         width={36}
                         height={36}
                         className="w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 border-white"
                     />
                     <Image
-                        src="/placeholder-user.jpg"
+                        src="/icons/trusted4.png"
                         alt="User"
                         width={36}
                         height={36}
