@@ -80,9 +80,16 @@ async function apiCall<T>(
 ): Promise<T> {
   const url = `/api${endpoint}`
   
+  // Ottieni il token di autenticazione da Supabase
+  const { supabase } = await import('@/src/lib/supabase')
+  const { data: { session } } = await supabase.auth.getSession()
+  
   const defaultOptions: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
+      ...(session?.access_token && { 
+        'Authorization': `Bearer ${session.access_token}` 
+      }),
       ...options.headers,
     },
     signal: AbortSignal.timeout(30000), // 30 secondi timeout

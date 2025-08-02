@@ -1,6 +1,11 @@
+"use client"
+
 import { Button } from "../ui/button"
+import { useAuth } from "@/src/hooks/useAuth"
 
 export default function CallToActionSection() {
+  const { user, loading } = useAuth()
+
   return (
     <section className="relative z-10 px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
       <div className="max-w-6xl mx-auto text-center">
@@ -12,7 +17,7 @@ export default function CallToActionSection() {
               Create historically immersive videos that transport your audience to any era.
             </p>
 
-            <a href="/generate-video">
+            <a href={!loading && user ? "/generate-video" : "/login"}>
               <Button
                 size="lg"
                 className="bg-white text-black hover:bg-white/90 px-6 sm:px-8 mt-6 text-base sm:text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105"

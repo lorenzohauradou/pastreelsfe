@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/src/components/ui/button"
-import { ChevronLeft, ChevronRight, Play } from "lucide-react"
+import { ChevronLeft, ChevronRight, Play, LogOut, User } from "lucide-react"
 import { getAvailableOptions, EraPreset } from "../lib/api"
+import { useAuth } from "@/src/hooks/useAuth"
+import { useLogoutContext } from "@/src/components/auth/logout-guard"
 
 interface EraSelectionStepProps {
     onEraSelected: (era: EraPreset) => void
@@ -21,6 +23,8 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [isSelecting, setIsSelecting] = useState(false)
+    const { user } = useAuth()
+    const { logout } = useLogoutContext()
 
     useEffect(() => {
         const loadEras = async () => {
@@ -53,6 +57,10 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
         onEraSelected(currentEra)
     }
 
+    const handleLogout = () => {
+        logout()
+    }
+
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -66,6 +74,25 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
 
     return (
         <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
+            {user && (
+                <div className="absolute top-6 right-6 z-10">
+                    <div className="flex items-center space-x-3 bg-black/40 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 shadow-lg">
+                        <div className="flex items-center space-x-2 text-white/90 text-sm">
+                            <User className="w-4 h-4" />
+                            <span className="hidden sm:block max-w-[120px] truncate">{user.name}</span>
+                        </div>
+
+                        <button
+                            onClick={handleLogout}
+                            className="text-white/70 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full"
+                            title="Sign Out"
+                        >
+                            <LogOut className="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className="max-w-6xl mx-auto w-full">
                 <div className="text-center space-y-4 sm:space-y-6 mb-12">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white">
@@ -76,7 +103,6 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
                     </p>
                 </div>
                 <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center scale-[0.8]">
-                    {/* Video Preview */}
                     <div className="relative order-2 lg:order-1">
                         <div className="relative aspect-[9/16] max-w-md mx-auto">
                             <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/20 to-purple-600/20 rounded-3xl blur-xl"></div>
@@ -95,7 +121,6 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
 
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                                {/* Play Button Overlay */}
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 group-hover:scale-110 transition-transform duration-300">
                                         <Play className="w-8 h-8 text-white ml-1" />
@@ -105,7 +130,6 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
                         </div>
                     </div>
 
-                    {/* Era Info & Controls */}
                     <div className="space-y-8 order-1 lg:order-2">
                         <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-8 shadow-xl">
                             {currentEra && (
@@ -130,7 +154,6 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
                             )}
                         </div>
 
-                        {/* Navigation Controls */}
                         <div className="flex items-center justify-between">
                             <Button
                                 variant="outline"
@@ -166,7 +189,6 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
                             </Button>
                         </div>
 
-                        {/* Select Button */}
                         <Button
                             size="lg"
                             onClick={handleSelectEra}

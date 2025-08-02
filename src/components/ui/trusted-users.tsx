@@ -48,7 +48,7 @@ export function TrustedUsers() {
             </div>
 
             <p className="text-gray-300 text-sm sm:text-base font-medium text-center">
-                Trusted by 10,000+ creators
+                Trusted by 750+ creators
             </p>
         </div>
     )

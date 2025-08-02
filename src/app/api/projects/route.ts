@@ -6,10 +6,14 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     
+    // Forward Authorization header from frontend to backend
+    const authHeader = request.headers.get('Authorization')
+    
     const response = await fetch(`${BACKEND_URL}/api/projects/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(authHeader && { 'Authorization': authHeader }),
       },
       body: JSON.stringify(body),
     })

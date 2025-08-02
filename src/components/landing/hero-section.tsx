@@ -1,10 +1,15 @@
+"use client"
+
 import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
 import { VideoCard } from "../ui/video-card"
 import { TrustedUsers } from "../ui/trusted-users"
 import { Play } from "lucide-react"
+import { useAuth } from "@/src/hooks/useAuth"
 
 export default function HeroSection() {
+  const { user, loading } = useAuth()
+
   return (
     <section className="relative z-10 px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-8 sm:pb-12 lg:pt-32 lg:pb-20 mt-12 sm:mt-16">
       <div className="max-w-5xl mx-auto">
@@ -27,7 +32,7 @@ export default function HeroSection() {
               </p>
             </div>
 
-            <a href="/generate-video">
+            <a href={!loading && user ? "/generate-video" : "/login"}>
               <Button
                 size="lg"
                 className="bg-yellow-400 text-black hover:bg-yellow-300  px-6 sm:px-8 mt-6 text-base sm:text-lg font-semibold rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black"
@@ -48,15 +53,15 @@ export default function HeroSection() {
                     className="transform rotate-6 hover:rotate-1 transition-transform duration-500"
                   />
                   <VideoCard
-                    title="A man in USA 1950s"
-                    videoSrc="/videos/usa1950s.mp4"
+                    title="A man in USA 1990s"
+                    videoSrc="/videos/usa90ss.mp4"
                     className="transform rotate-0 hover:rotate-0 transition-transform duration-500 pt-6"
                   />
                 </div>
                 <div className="flex justify-end pt-10">
                   <VideoCard
-                    title="Madrid, Spain 1987"
-                    videoSrc="/videos/spain.mp4"
+                    title="Ancient Rome 121 BC"
+                    videoSrc="/videos/ancient_rome.mp4"
                     className="transform rotate-2 hover:-rotate-3 transition-transform duration-500 pt-16"
                   />
                 </div>
@@ -71,15 +76,15 @@ export default function HeroSection() {
                   className="transform rotate-1 hover:rotate-0 transition-transform duration-500"
                 />
                 <VideoCard
-                  title="A man in USA 1950s"
-                  videoSrc="/videos/usa1950s.mp4"
+                  title="A man in USA 1990s"
+                  videoSrc="/videos/usa90s.mp4"
                   className="transform -rotate-1 hover:rotate-0 transition-transform duration-500"
                 />
               </div>
               <div className="flex justify-center">
                 <VideoCard
-                  title="Madrid, Spain 1987"
-                  videoSrc="/videos/spain.mp4"
+                  title="Ancient Rome 121 BC"
+                  videoSrc="/videos/ancient_rome.mp4"
                   className="transform -rotate-2 hover:-rotate-1 transition-transform duration-500"
                 />
               </div>

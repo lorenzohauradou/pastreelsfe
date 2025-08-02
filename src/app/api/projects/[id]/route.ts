@@ -9,10 +9,14 @@ export async function GET(
   try {
     const { id: projectId } = await params
     
+    // Forward Authorization header from frontend to backend
+    const authHeader = request.headers.get('Authorization')
+    
     const response = await fetch(`${BACKEND_URL}/api/projects/${projectId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        ...(authHeader && { 'Authorization': authHeader }),
       },
     })
 

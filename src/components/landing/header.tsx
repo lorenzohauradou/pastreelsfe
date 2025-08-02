@@ -5,11 +5,13 @@ import { Badge } from "../ui/badge"
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import { Menu, X } from "lucide-react"
+import { useAuth } from "@/src/hooks/useAuth"
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false)
+  const { user, loading } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,7 +61,7 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center space-x-3">
-              <a href="/generate-video">
+              <a href={!loading && user ? "/generate-video" : "/login"}>
                 <Button className={`px-4 sm:px-6 py-2 rounded-full text-sm sm:text-base transition-all ${isButtonHighlighted
                   ? 'bg-yellow-400 text-black hover:bg-yellow-300 font-semibold duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25 border-2 border-black'
                   : 'bg-white text-black hover:bg-white/90 font-medium duration-300'
