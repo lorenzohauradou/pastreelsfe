@@ -5,6 +5,7 @@ import { Button } from "@/src/components/ui/button"
 import { Progress } from "@/src/components/ui/progress"
 import { Download, RefreshCw, Check, X, Sparkles } from "lucide-react"
 import { createProject, startImageGeneration, pollTaskStatus, getProjectAssets, createVideo, Project, Asset, EraPreset } from "../lib/api"
+import ImagePreviewGrid from "./image-preview-grid"
 
 interface GenerationFlowProps {
     selectedEra: EraPreset
@@ -31,6 +32,7 @@ export default function GenerationFlow({
     const [selectedAssets, setSelectedAssets] = useState<Asset[]>([])
     const [error, setError] = useState<string | null>(null)
     const [stableVideoUrl, setStableVideoUrl] = useState<string | null>(null)
+    const [previewImages, setPreviewImages] = useState<{ index: number; url: string }[]>([])
     const hasStarted = useRef(false)
 
     // Auto-switch to completed if we have a video URL (failsafe) - ONLY if not already completed
@@ -139,18 +141,36 @@ export default function GenerationFlow({
     const startImageGenerationFlow = async (projectId: number) => {
         try {
             setCurrentMessage("Starting AI image generation...")
+            setPreviewImages([]) // Reset preview images
             const taskResponse = await startImageGeneration(projectId)
 
-            // Poll for completion
+            // Poll for completion with progressive image loading
             await pollTaskStatus(
                 taskResponse.task_id,
-                (status) => {
+                async (status) => {
                     setProgress(status.progress || 0)
                     setCurrentMessage(status.message || "Generating images...")
+
+                    // Check for new completed images during generation
+                    try {
+                        const assets = await getProjectAssets(projectId, 'image')
+                        const completedAssets = assets.filter(asset => asset.status === 'completed')
+
+                        // Update preview images with newly completed ones
+                        const newPreviewImages = completedAssets.map((asset, index) => ({
+                            index,
+                            url: asset.file_url || ''
+                        })).filter(img => img.url)
+
+                        setPreviewImages(newPreviewImages)
+                    } catch (imgErr) {
+                        // Non-blocking error - continue with generation
+                        console.log("Could not fetch partial images:", imgErr)
+                    }
                 }
             )
 
-            // Get generated assets - wait a bit for database to be updated
+            // Get final generated assets - wait a bit for database to be updated
             await new Promise(resolve => setTimeout(resolve, 1000))
             const assets = await getProjectAssets(projectId, 'image')
 
@@ -317,6 +337,7 @@ export default function GenerationFlow({
         setSelectedAssets([])
         setError(null)
         setStableVideoUrl(null)
+        setPreviewImages([])
 
         // Call parent's start over function to navigate back to era selection
         onStartOver()
@@ -382,37 +403,61 @@ export default function GenerationFlow({
                                 </h3>
                                 <p className="text-gray-300 transition-all duration-300">{currentMessage}</p>
                             </div>
-                            {/* Barra di progresso */}
+                            {/* Barra di progresso basata su immagini effettivamente generate */}
                             <div className="space-y-3 animate-in fade-in-50 slide-in-from-bottom-2 duration-500" style={{ animationDelay: '400ms' }}>
-                                <div className="relative">
-                                    <Progress
-                                        value={progress}
-                                        className="w-full h-4 bg-gray-800/50 border border-white/10 rounded-full overflow-hidden shadow-inner"
-                                    />
-                                    <div
-                                        className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out"
-                                        style={{
-                                            width: `${progress}%`,
-                                            background: `linear-gradient(90deg, 
-                                                ${progress < 30 ? '#ef4444, #f97316' :
-                                                    progress < 70 ? '#f97316, #eab308' :
-                                                        '#eab308, #22c55e'})`
-                                        }}
-                                    ></div>
-                                    <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-full"></div>
-                                </div>
+                                {(() => {
+                                    const actualProgress = currentPhase === "generating-images"
+                                        ? (previewImages.length / (project?.num_images || 6)) * 100
+                                        : progress;
 
-                                <div className="flex justify-between items-center">
-                                    <p className="text-sm font-medium text-gray-300">
-                                        {Math.round(progress)}% Complete
-                                    </p>
-                                    <div className="flex space-x-1">
-                                        <div className="w-1 h-1 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-                                        <div className="w-1 h-1 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                                        <div className="w-1 h-1 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                                    </div>
-                                </div>
+                                    return (
+                                        <>
+                                            <div className="relative">
+                                                <Progress
+                                                    value={actualProgress}
+                                                    className="w-full h-4 bg-gray-800/50 border border-white/10 rounded-full overflow-hidden shadow-inner"
+                                                />
+                                                <div
+                                                    className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out"
+                                                    style={{
+                                                        width: `${actualProgress}%`,
+                                                        background: `linear-gradient(90deg, 
+                                                            ${actualProgress < 30 ? '#ef4444, #f97316' :
+                                                                actualProgress < 70 ? '#f97316, #eab308' :
+                                                                    '#eab308, #22c55e'})`
+                                                    }}
+                                                ></div>
+                                                <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent rounded-full"></div>
+                                            </div>
+
+                                            <div className="flex justify-between items-center">
+                                                <p className="text-sm font-medium text-gray-300">
+                                                    {currentPhase === "generating-images"
+                                                        ? `${previewImages.length}/${project?.num_images || 6} images generated`
+                                                        : `${Math.round(actualProgress)}% Complete`}
+                                                </p>
+                                                <div className="flex space-x-1">
+                                                    <div className="w-1 h-1 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                                                    <div className="w-1 h-1 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                                    <div className="w-1 h-1 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                                                </div>
+                                            </div>
+                                        </>
+                                    );
+                                })()}
                             </div>
+
+                            {/* Preview images durante la generazione */}
+                            {currentPhase === "generating-images" && (
+                                <div className="animate-in fade-in-50 slide-in-from-bottom-2 duration-500" style={{ animationDelay: '800ms' }}>
+                                    <ImagePreviewGrid
+                                        totalImages={project?.num_images || 6}
+                                        currentProgress={progress}
+                                        generatedImages={previewImages}
+                                    />
+                                </div>
+                            )}
+
                             <p className="text-sm text-gray-400 max-w-md mx-auto leading-relaxed animate-in fade-in-50 duration-500" style={{ animationDelay: '600ms' }}>
                                 We're creating your high-quality AI cinematic content.
                             </p>
