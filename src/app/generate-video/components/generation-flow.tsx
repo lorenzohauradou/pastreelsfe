@@ -586,7 +586,34 @@ export default function GenerationFlow({
                             <div className="flex gap-4 justify-center pt-4">
                                 <Button
                                     className="bg-yellow-400 text-black hover:bg-yellow-300 font-semibold px-6 py-2 rounded-full transition-all duration-200 hover:scale-105 shadow-lg shadow-yellow-400/25"
-                                    onClick={() => videoUrlToUse && window.open(videoUrlToUse, '_blank')}
+                                    onClick={async () => {
+                                        if (videoUrlToUse) {
+                                            try {
+                                                // Fetch del video come blob per forzare il download
+                                                const response = await fetch(videoUrlToUse)
+                                                const blob = await response.blob()
+
+                                                // Crea URL temporaneo del blob
+                                                const blobUrl = window.URL.createObjectURL(blob)
+
+                                                // Download forzato
+                                                const link = document.createElement('a')
+                                                link.href = blobUrl
+                                                link.download = `pastreels-${selectedEra.display_name}-video.mp4`
+                                                link.style.display = 'none'
+                                                document.body.appendChild(link)
+                                                link.click()
+                                                document.body.removeChild(link)
+
+                                                // Pulisci URL temporaneo
+                                                window.URL.revokeObjectURL(blobUrl)
+                                            } catch (error) {
+                                                console.error('Errore download video:', error)
+                                                // Fallback al metodo precedente se fetch fallisce
+                                                window.open(videoUrlToUse, '_blank')
+                                            }
+                                        }
+                                    }}
                                     disabled={!videoUrlToUse}
                                 >
                                     <Download className="w-4 h-4 mr-2" />
