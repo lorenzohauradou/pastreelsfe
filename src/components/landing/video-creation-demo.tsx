@@ -1,6 +1,5 @@
 import { Button } from "../ui/button"
-import { Badge } from "../ui/badge"
-import { Play, Volume2 } from "lucide-react"
+import { Play, Volume2, ArrowRight } from "lucide-react"
 
 export default function VideoCreationDemo() {
   return (
@@ -9,52 +8,40 @@ export default function VideoCreationDemo() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div className="space-y-4">
-              <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4 shadow-xl">
+              <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4 shadow-xl">
                 <div className="flex items-center space-x-2 text-white/70">
                   <span className="text-lg">📝</span>
-                  <span>Script</span>
+                  <span>Headline</span>
                 </div>
-                <div className="bg-black/30 backdrop-blur-sm border border-white/5 rounded-xl p-4">
-                  <p className="text-sm text-white/80 leading-relaxed">
-                    Have you ever heard of the mysterious man who vanished every full moon? It started in a small town,
-                    one that seemed perfectly ordinary at first glance. But locals whispered about him—the man in the
-                    tattered coat.
-                  </p>
+                <div className="bg-black/30 backdrop-blur-sm border border-white/5 rounded-xl p-6">
+                  <h3 className="text-xl sm:text-2xl font-bold leading-relaxed text-center">
+                    <span className="text-yellow-400 drop-shadow-lg" style={{
+                      textShadow: '0 4px 8px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(251, 191, 36, 0.4), 0 1px 2px rgba(0, 0, 0, 0.9)'
+                    }}>
+                      POV:
+                    </span>
+                    <span className="text-white drop-shadow-lg ml-2" style={{
+                      textShadow: '0 4px 8px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(255, 255, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.9)'
+                    }}>
+                      Waking Up as a Teenager in 2000s USA
+                    </span>
+                  </h3>
                 </div>
-                <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
-                  <span className="mr-2">🤖</span>
-                  AI is writing script...
+                <Button size="sm" className="bg-zinc-800 hover:bg-zinc-700 text-white">
+                  Choose Headline
+                  <ArrowRight />
                 </Button>
               </div>
 
-              <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4 shadow-xl">
-                <div className="flex items-center space-x-2 text-white/70">
-                  <span className="text-lg">🎤</span>
-                  <span>Voice</span>
-                </div>
-                <div className="flex items-center justify-between bg-black/30 backdrop-blur-sm border border-white/5 rounded-xl p-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full"></div>
-                    <div>
-                      <p className="text-white font-medium">Josh</p>
-                      <p className="text-white/60 text-sm">Narration, Deep, Young</p>
-                    </div>
-                  </div>
-                  <Button size="sm" variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10">
-                    <Play className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-
-              <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4 shadow-xl">
+              <div className="bg-zinc-900/40 backdrop-blur-sm border border-white/10 rounded-2xl p-6 space-y-4 shadow-xl">
                 <div className="flex items-center space-x-2 text-white/70">
                   <span className="text-lg">🎵</span>
                   <span>Background music</span>
                 </div>
                 <div className="flex items-center justify-between bg-black/30 backdrop-blur-sm border border-white/5 rounded-xl p-4">
                   <div>
-                    <p className="text-white font-medium">Ghost Arpeggios</p>
-                    <p className="text-white/60 text-sm">Violin, Scary</p>
+                    <p className="text-white font-medium">Hip Hop</p>
+                    <p className="text-white/60 text-sm">Hip Hop, 2000s, USA</p>
                   </div>
                   <Button size="sm" variant="ghost" className="text-white/70 hover:text-white hover:bg-white/10">
                     <Play className="w-4 h-4" />
