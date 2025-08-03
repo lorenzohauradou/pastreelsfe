@@ -168,20 +168,27 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
                                 Previous
                             </Button>
 
-                            <div className="flex space-x-2">
-                                {[0, 1, 2].map((dotIndex) => {
-                                    // Calcola quale pallino deve essere attivo in base alla posizione corrente
-                                    const isActive = selectedIndex % 3 === dotIndex;
-                                    return (
-                                        <div
-                                            key={dotIndex}
-                                            className={`w-3 h-3 rounded-full transition-all duration-200 ${isActive
-                                                ? "bg-yellow-400 scale-125"
-                                                : "bg-white/30"
-                                                }`}
-                                        />
-                                    );
-                                })}
+                            <div className="flex flex-col items-center space-y-2">
+                                <div className="flex space-x-2">
+                                    {[0, 1, 2].map((dotIndex) => {
+                                        // Calcola quale pallino deve essere attivo in base alla posizione corrente
+                                        const isActive = selectedIndex % 3 === dotIndex;
+                                        return (
+                                            <div
+                                                key={dotIndex}
+                                                className={`w-3 h-3 rounded-full transition-all duration-200 ${isActive
+                                                    ? "bg-yellow-400 scale-125"
+                                                    : "bg-white/30"
+                                                    }`}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                                <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-full px-3 py-1">
+                                    <span className="text-yellow-400 font-medium">{selectedIndex + 1}</span>
+                                    <span className="text-gray-400 mx-1">/</span>
+                                    <span className="text-white/70">{eras.length}</span>
+                                </div>
                             </div>
 
                             <Button
