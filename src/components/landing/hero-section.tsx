@@ -4,6 +4,7 @@ import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
 import { VideoCard } from "../ui/video-card"
 import { TrustedUsers } from "../ui/trusted-users"
+import { SocialBanner } from "../ui/social-banner"
 import { Play } from "lucide-react"
 import { useAuth } from "@/src/hooks/useAuth"
 
@@ -91,8 +92,9 @@ export default function HeroSection() {
             </div>
           </div>
         </div>
-        <div className="flex justify-center mt-6 sm:mt-8">
+        <div className="flex flex-col items-center mt-6 sm:mt-8">
           <TrustedUsers />
+          <SocialBanner />
         </div>
       </div>
     </section>
