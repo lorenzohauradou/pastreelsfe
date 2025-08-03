@@ -575,11 +575,41 @@ export default function GenerationFlow({
                                     </div>
                                 </div>
                             ) : (
-                                <div className="max-w-sm mx-auto p-4 bg-black/40 border border-yellow-400/20 rounded-lg">
-                                    <p className="text-yellow-400">Video is processing... Please wait a moment.</p>
-                                    <p className="text-xs text-gray-500 mt-2">
-                                        Current phase: {currentPhase}, Project ID: {project?.id}
-                                    </p>
+                                <div className="max-w-sm mx-auto">
+                                    {/* Video Preview Placeholder con effetti eleganti */}
+                                    <div className="relative aspect-video rounded-lg overflow-hidden shadow-2xl bg-black/40 border border-white/10">
+                                        {/* Background con gradienti animati */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-blue-800/20 to-purple-700/30 animate-pulse"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-yellow-600/10 via-transparent to-purple-600/20 opacity-70"></div>
+
+                                        {/* Effetto blur animato che simula il contenuto video */}
+                                        <div className="absolute inset-4 rounded bg-gradient-to-br from-gray-600/40 to-gray-700/60 blur-xl animate-pulse"
+                                            style={{ animationDuration: '2s' }}></div>
+                                        <div className="absolute inset-6 rounded bg-gradient-to-tr from-blue-500/30 to-purple-500/40 blur-lg animate-pulse"
+                                            style={{ animationDuration: '3s', animationDelay: '0.5s' }}></div>
+                                        <div className="absolute inset-8 rounded bg-gradient-to-bl from-yellow-400/20 to-orange-500/30 blur-md animate-pulse"
+                                            style={{ animationDuration: '2.5s', animationDelay: '1s' }}></div>
+
+                                        {/* Particelle che si muovono */}
+                                        <div className="absolute top-4 left-6 w-2 h-2 bg-yellow-400/60 rounded-full animate-ping"
+                                            style={{ animationDelay: '0s' }}></div>
+                                        <div className="absolute bottom-6 right-8 w-1 h-1 bg-purple-400/60 rounded-full animate-ping"
+                                            style={{ animationDelay: '1s' }}></div>
+                                        <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-blue-400/60 rounded-full animate-ping"
+                                            style={{ animationDelay: '2s' }}></div>
+
+                                        {/* Overlay con testo */}
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="text-center space-y-2">
+                                                <div className="w-12 h-12 mx-auto border-2 border-yellow-400/60 border-t-transparent rounded-full animate-spin"></div>
+                                                <p className="text-yellow-400 font-medium text-sm">Processing Video...</p>
+                                                <p className="text-gray-400 text-xs">Creating cinematic content</p>
+                                            </div>
+                                        </div>
+
+                                        {/* Gradiente overlay finale */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
+                                    </div>
                                 </div>
                             )}
 

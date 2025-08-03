@@ -46,7 +46,7 @@ export default function FeaturesSection() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white/90 leading-tight">
             Bringing History to Life
             <br />
-            Has Never Been So Cinematic
+            Has Never Been Easier
           </h2>
         </div>
 
