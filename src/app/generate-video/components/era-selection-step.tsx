@@ -124,8 +124,8 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
 
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 group-hover:scale-110 transition-transform duration-300">
+                                <div className="absolute inset-0 flex items-center justify-center group">
+                                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 group-hover:opacity-0">
                                         <Play className="w-8 h-8 text-white ml-1" />
                                     </div>
                                 </div>
