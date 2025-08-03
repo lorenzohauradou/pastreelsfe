@@ -15,7 +15,7 @@ const eraVideos = {
     "roma_antica": "/videos/ancient_rome.mp4",
     "usa_1990": "/videos/usa90ss.mp4",
     "japan_1990s_cars": "/videos/japan90car.mp4",
-    "cyberpunk_tokyo": "/videos/spain.mp4"
+    "apollo_11": "/videos/apollo_11.mp4"
 }
 
 export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProps) {
@@ -166,16 +166,19 @@ export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProp
                             </Button>
 
                             <div className="flex space-x-2">
-                                {eras.map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setSelectedIndex(index)}
-                                        className={`w-3 h-3 rounded-full transition-all duration-200 ${index === selectedIndex
-                                            ? "bg-yellow-400 scale-125"
-                                            : "bg-white/30 hover:bg-white/50"
-                                            }`}
-                                    />
-                                ))}
+                                {[0, 1, 2].map((dotIndex) => {
+                                    // Calcola quale pallino deve essere attivo in base alla posizione corrente
+                                    const isActive = selectedIndex % 3 === dotIndex;
+                                    return (
+                                        <div
+                                            key={dotIndex}
+                                            className={`w-3 h-3 rounded-full transition-all duration-200 ${isActive
+                                                ? "bg-yellow-400 scale-125"
+                                                : "bg-white/30"
+                                                }`}
+                                        />
+                                    );
+                                })}
                             </div>
 
                             <Button

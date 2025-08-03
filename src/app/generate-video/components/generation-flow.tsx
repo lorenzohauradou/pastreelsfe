@@ -255,6 +255,15 @@ export default function GenerationFlow({
                     setCurrentMessage(status.message || "Generating video...")
                 }
             )
+            // Check if final_video_url is directly in the result (unified workflow)
+            if (finalStatus.result?.final_video_url) {
+                setStableVideoUrl(finalStatus.result.final_video_url)
+                setCurrentPhase("completed")
+                setCurrentMessage("Video ready!")
+                return
+            }
+
+            // Legacy: check for separate final task (old workflow)
             if (finalStatus.result?.final_task_id) {
                 setCurrentMessage("Creating final video...")
 
@@ -272,19 +281,19 @@ export default function GenerationFlow({
                     setCurrentMessage("Video ready!")
                     return
                 }
+            }
 
-                // Fallback: controlla il progetto
-                await new Promise(resolve => setTimeout(resolve, 2000))
-                const { getProject } = await import("../lib/api")
-                const updatedProject = await getProject(project!.id)
+            // Fallback: controlla il progetto
+            await new Promise(resolve => setTimeout(resolve, 2000))
+            const { getProject } = await import("../lib/api")
+            const updatedProject = await getProject(project!.id)
 
-                if (updatedProject.final_video_url) {
-                    setProject(updatedProject)
-                    setStableVideoUrl(updatedProject.final_video_url)
-                    setCurrentPhase("completed")
-                    setCurrentMessage("Video ready!")
-                    return
-                }
+            if (updatedProject.final_video_url) {
+                setProject(updatedProject)
+                setStableVideoUrl(updatedProject.final_video_url)
+                setCurrentPhase("completed")
+                setCurrentMessage("Video ready!")
+                return
             } else {
                 setCurrentPhase("completed")
                 onGenerationComplete()
