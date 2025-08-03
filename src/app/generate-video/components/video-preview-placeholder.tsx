@@ -40,9 +40,6 @@ export default function VideoPreviewPlaceholder({
                                     <div className="text-black font-medium text-sm">
                                         Creating Video...
                                     </div>
-                                    <div className="text-gray-300 text-xs">
-                                        {Math.round(progress)}% Complete
-                                    </div>
                                 </div>
                             </div>
                         )}
