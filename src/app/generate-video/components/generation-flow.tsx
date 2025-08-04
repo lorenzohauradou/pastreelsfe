@@ -670,13 +670,21 @@ export default function GenerationFlow({
                             <div className="flex justify-between items-center">
                                 <p className="text-gray-400">
                                     {selectedAssets.length} of {generatedAssets.length} images selected
+                                    {regeneratingAssets.size > 0 && (
+                                        <span className="block text-yellow-400 text-sm mt-1">
+                                            {regeneratingAssets.size} image{regeneratingAssets.size > 1 ? 's' : ''} regenerating...
+                                        </span>
+                                    )}
                                 </p>
                                 <Button
                                     onClick={startVideoGeneration}
-                                    disabled={selectedAssets.length === 0}
+                                    disabled={selectedAssets.length === 0 || regeneratingAssets.size > 0}
                                     className="bg-yellow-400 text-black hover:bg-yellow-300 px-6 py-3 font-semibold rounded-full transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Generate Video ({selectedAssets.length} scenes)
+                                    {regeneratingAssets.size > 0
+                                        ? `Regenerating ${regeneratingAssets.size} image${regeneratingAssets.size > 1 ? 's' : ''}...`
+                                        : `Generate Video (${selectedAssets.length} scenes)`
+                                    }
                                 </Button>
                             </div>
                         </div>

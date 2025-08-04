@@ -14,7 +14,7 @@ interface EraSelectionStepProps {
 const eraVideos = {
     "roma_antica": "/videos/ancient_rome.mp4",
     "usa_1990": "/videos/usa90ss.mp4",
-    "japan_1990s_cars": "/videos/japan90car.mp4",
+    "tokyo_1970": "/videos/Tokyo70s.mp4",
     "apollo_11": "/videos/apollo_11.mp4",
     "dinosaur_era": "/videos/dinoprev.mp4",
     "london_1960s": "/videos/london60s.mp4",
