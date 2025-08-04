@@ -21,7 +21,7 @@ const videoExamples = [
   },
   {
     id: "rome",
-    title: "The story of Caius",
+    title: "The story of Caius, Julius Caesar",
     fullVideoSrc: "/videos/ancient_roma.mp4",
     aspectRatio: "portrait"
   },
