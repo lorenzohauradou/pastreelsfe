@@ -15,15 +15,8 @@ const nextConfig = {
     ],
     formats: ['image/webp', 'image/avif'],
   },
-  // SEO ottimizzazioni
-  experimental: {
-    optimizeCss: true,
-  },
-  // Compressione
   compress: true,
-  // Trailing slash consistency
   trailingSlash: false,
-  // Headers per SEO e performance
   async headers() {
     return [
       {
