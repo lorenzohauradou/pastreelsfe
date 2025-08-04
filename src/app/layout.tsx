@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { Analytics } from "@vercel/analytics/next"
+import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData } from '@/src/components/seo/structured-data'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -21,13 +22,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Past Reels - Your Time Machine for Viral Videos',
     description: 'Create stunning cinematic videos with historical aesthetics. From the 1950s to Ancient Rome, turn your ideas into viral content.',
-    url: 'https://pastreels.com', // Replace with your actual domain
+    url: 'https://pastreels.com',
     siteName: 'Past Reels',
     type: 'website',
     locale: 'en_US',
     images: [
       {
-        url: '/images/pastreelslogo.png', // Using your existing logo
+        url: '/OpenGraphImage.png',
         width: 1200,
         height: 630,
         alt: 'Past Reels - AI Video Generator',
@@ -51,9 +52,11 @@ export const metadata: Metadata = {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
       { url: '/favicon.ico', type: 'image/x-icon' },
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
     ],
     shortcut: '/favicon.ico',
-    apple: '/favicon.ico', // You might want to create a proper apple-touch-icon later
+    apple: '/apple-touch-icon.png',
   },
 
   // Additional metadata
@@ -91,6 +94,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <OrganizationStructuredData />
+        <WebSiteStructuredData />
+        <SoftwareApplicationStructuredData />
         <style>{`
 html {
   font-family: ${GeistSans.style.fontFamily};
@@ -99,8 +105,13 @@ html {
 }
         `}</style>
       </head>
-      <body>
-        {children}
+      <body className="antialiased">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-yellow-400 text-black px-4 py-2 rounded-md font-medium z-50">
+          Skip to main content
+        </a>
+        <main id="main-content">
+          {children}
+        </main>
         <Analytics />
       </body>
     </html>

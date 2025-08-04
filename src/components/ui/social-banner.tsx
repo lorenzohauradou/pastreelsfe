@@ -59,6 +59,8 @@ export function SocialBanner() {
                         <a
                             key={social.name}
                             href={social.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className={`text-gray-500 ${social.color} transition-all duration-200 hover:scale-110 hover:-translate-y-0.5 ${social.icon ? 'scale-150' : ''}`}
                             aria-label={`Follow us on ${social.name}`}
                         >
