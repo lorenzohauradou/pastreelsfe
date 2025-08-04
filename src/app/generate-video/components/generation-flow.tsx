@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { Button } from "@/src/components/ui/button"
 import { Progress } from "@/src/components/ui/progress"
 import { Download, RefreshCw, Check, X, Sparkles } from "lucide-react"
-import { createProject, startImageGeneration, pollTaskStatus, getProjectAssets, createVideo, Project, Asset, EraPreset } from "../lib/api"
+import { createProject, startImageGeneration, pollTaskStatus, getProjectAssets, createVideo, regenerateAsset, Project, Asset, EraPreset, TaskStatus } from "../lib/api"
 import ImagePreviewGrid from "./image-preview-grid"
 import VideoPreviewPlaceholder from "./video-preview-placeholder"
 
@@ -34,6 +34,8 @@ export default function GenerationFlow({
     const [error, setError] = useState<string | null>(null)
     const [stableVideoUrl, setStableVideoUrl] = useState<string | null>(null)
     const [previewImages, setPreviewImages] = useState<{ index: number; url: string }[]>([])
+    const [regeneratingAssets, setRegeneratingAssets] = useState<Set<number>>(new Set())
+    const [previouslySelectedAssets, setPreviouslySelectedAssets] = useState<Set<number>>(new Set())
     const hasStarted = useRef(false)
 
     // Auto-switch to completed if we have a video URL (failsafe) - ONLY if not already completed
@@ -203,6 +205,102 @@ export default function GenerationFlow({
                 return [...prev, asset]
             }
         })
+    }
+
+    const handleRegenerateAsset = async (asset: Asset) => {
+        if (!project) return
+
+        try {
+            // Salva se l'asset era selezionato prima della rigenerazione
+            const wasSelected = selectedAssets.some(a => a.id === asset.id)
+            if (wasSelected) {
+                setPreviouslySelectedAssets(prev => new Set(prev).add(asset.id))
+            }
+
+            // Deseleziona l'immagine
+            setSelectedAssets(prev => prev.filter(a => a.id !== asset.id))
+
+            // Aggiungi asset al set di quelli in rigenerazione
+            setRegeneratingAssets(prev => new Set(prev).add(asset.id))
+
+            // Avvia rigenerazione
+            const response = await regenerateAsset(project.id, asset.id)
+
+            // Polling per il completamento
+            const pollRegeneration = async () => {
+                try {
+                    const status = await pollTaskStatus(response.task_id)
+
+                    if (status.status === 'completed' && status.result?.asset) {
+                        // Aggiorna asset con nuova immagine
+                        const updatedAsset = status.result.asset
+                        setGeneratedAssets(prev =>
+                            prev.map(a => a.id === asset.id ? { ...a, file_url: updatedAsset.file_url } : a)
+                        )
+
+                        // Rimuovi da regenerating
+                        setRegeneratingAssets(prev => {
+                            const newSet = new Set(prev)
+                            newSet.delete(asset.id)
+                            return newSet
+                        })
+
+                        // Riseleziona se era precedentemente selezionato
+                        if (previouslySelectedAssets.has(asset.id)) {
+                            setSelectedAssets(prev => [...prev, { ...asset, file_url: updatedAsset.file_url }])
+                            setPreviouslySelectedAssets(prev => {
+                                const newSet = new Set(prev)
+                                newSet.delete(asset.id)
+                                return newSet
+                            })
+                        }
+                    } else if (status.status === 'failed') {
+                        setRegeneratingAssets(prev => {
+                            const newSet = new Set(prev)
+                            newSet.delete(asset.id)
+                            return newSet
+                        })
+                        // Pulisci anche da previously selected
+                        setPreviouslySelectedAssets(prev => {
+                            const newSet = new Set(prev)
+                            newSet.delete(asset.id)
+                            return newSet
+                        })
+                    } else {
+                        setTimeout(pollRegeneration, 2000)
+                    }
+                } catch (error) {
+                    console.error('Error polling regeneration:', error)
+                    setRegeneratingAssets(prev => {
+                        const newSet = new Set(prev)
+                        newSet.delete(asset.id)
+                        return newSet
+                    })
+                    // Pulisci anche da previously selected
+                    setPreviouslySelectedAssets(prev => {
+                        const newSet = new Set(prev)
+                        newSet.delete(asset.id)
+                        return newSet
+                    })
+                }
+            }
+
+            pollRegeneration()
+
+        } catch (error) {
+            console.error('Error regenerating asset:', error)
+            setRegeneratingAssets(prev => {
+                const newSet = new Set(prev)
+                newSet.delete(asset.id)
+                return newSet
+            })
+            // Pulisci anche da previously selected
+            setPreviouslySelectedAssets(prev => {
+                const newSet = new Set(prev)
+                newSet.delete(asset.id)
+                return newSet
+            })
+        }
     }
 
     const startVideoGenerationWithAssets = async (assetsToUse: Asset[]) => {
@@ -497,36 +595,73 @@ export default function GenerationFlow({
                                 {generatedAssets.map((asset, index) => (
                                     <div key={asset.id} className="relative group">
                                         <div
-                                            className={`relative aspect-square rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-200 hover:scale-105 ${selectedAssets.some(a => a.id === asset.id)
-                                                ? "border-yellow-400 ring-2 ring-yellow-400/50"
-                                                : "border-white/20 hover:border-white/40"
+                                            className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 ${regeneratingAssets.has(asset.id)
+                                                ? "border-yellow-400/50 cursor-not-allowed"
+                                                : selectedAssets.some(a => a.id === asset.id)
+                                                    ? "border-yellow-400 ring-2 ring-yellow-400/50 cursor-pointer hover:scale-105"
+                                                    : "border-white/20 hover:border-white/40 cursor-pointer hover:scale-105"
                                                 }`}
-                                            onClick={() => handleImageSelection(asset)}
+                                            onClick={() => !regeneratingAssets.has(asset.id) && handleImageSelection(asset)}
                                         >
                                             {asset.file_url && (
                                                 <img
                                                     src={asset.file_url}
                                                     alt={`Scene ${index + 1}`}
-                                                    className="w-full h-full object-cover"
+                                                    className={`w-full h-full object-cover transition-all duration-500 ${regeneratingAssets.has(asset.id) ? "blur-sm" : ""
+                                                        }`}
                                                 />
                                             )}
 
-                                            {/* Selection Overlay */}
-                                            <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${selectedAssets.some(a => a.id === asset.id)
-                                                ? "bg-yellow-400/20 opacity-100"
-                                                : "bg-black/50 opacity-0 group-hover:opacity-100"
-                                                }`}>
-                                                {selectedAssets.some(a => a.id === asset.id) ? (
-                                                    <Check className="w-8 h-8 text-yellow-400" />
-                                                ) : (
-                                                    <div className="w-8 h-8 border-2 border-white rounded-full" />
-                                                )}
-                                            </div>
+                                            {/* Regeneration Overlay */}
+                                            {regeneratingAssets.has(asset.id) && (
+                                                <div className="absolute inset-0 bg-yellow-400/20 flex items-center justify-center">
+                                                    <div className="flex flex-col items-center gap-2">
+                                                        <div className="w-8 h-8 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+                                                        <span className="text-xs text-yellow-300 font-medium">Regenerating...</span>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Selection Overlay - solo se non sta rigenerando */}
+                                            {!regeneratingAssets.has(asset.id) && (
+                                                <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${selectedAssets.some(a => a.id === asset.id)
+                                                    ? "bg-yellow-400/20 opacity-100"
+                                                    : "bg-black/50 opacity-0 group-hover:opacity-100"
+                                                    }`}>
+                                                    {selectedAssets.some(a => a.id === asset.id) ? (
+                                                        <Check className="w-8 h-8 text-yellow-400" />
+                                                    ) : (
+                                                        <div className="w-8 h-8 border-2 border-white rounded-full" />
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {/* Blur effect during regeneration */}
+                                            {regeneratingAssets.has(asset.id) && (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-orange-500/10 rounded-lg blur-xl animate-pulse"></div>
+                                            )}
 
                                             {/* Scene Number */}
                                             <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
                                                 Scene {index + 1}
                                             </div>
+
+                                            {/* Regenerate Button - solo se non sta rigenerando */}
+                                            {!regeneratingAssets.has(asset.id) && (
+                                                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="bg-black/70 border-white/20 text-white hover:bg-white/10 px-2 py-1 h-auto"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            handleRegenerateAsset(asset)
+                                                        }}
+                                                    >
+                                                        <RefreshCw className="w-3 h-3" />
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}

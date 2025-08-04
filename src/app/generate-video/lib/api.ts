@@ -173,6 +173,15 @@ export async function startImageGeneration(projectId: number): Promise<TaskStatu
 }
 
 /**
+ * Regenerate a single image asset
+ */
+export async function regenerateAsset(projectId: number, assetId: number): Promise<TaskStatus> {
+  return apiCall<TaskStatus>(`/projects/${projectId}/regenerate-asset/${assetId}`, {
+    method: 'POST',
+  })
+}
+
+/**
  * Get project assets (images, videos, etc.)
  */
 export async function getProjectAssets(
