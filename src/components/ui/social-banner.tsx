@@ -1,6 +1,6 @@
 "use client"
 
-import { Instagram, Twitter, Youtube, Linkedin, Facebook } from "lucide-react"
+import { Instagram, Twitter, Youtube, Facebook } from "lucide-react"
 import Image from "next/image"
 
 type SocialLink = {
