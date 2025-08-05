@@ -795,9 +795,7 @@ export default function GenerationFlow({
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    onClick={() => {
-                                        onGenerationComplete() // Torna al menu principale
-                                    }}
+                                    onClick={handleStartOver}
                                     className="bg-black/40 border border-white/20 text-white hover:bg-white/10 px-6 py-2 rounded-full transition-all duration-200"
                                 >
                                     Create Another Video

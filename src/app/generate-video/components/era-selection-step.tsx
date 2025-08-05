@@ -17,8 +17,9 @@ const eraVideos = {
     "tokyo_1970": "/videos/Tokyo70s.mp4",
     "apollo_11": "/videos/apollo_11.mp4",
     "dinosaur_era": "/videos/dinoprev.mp4",
-    "london_1960s": "/videos/london60s.mp4",
+    "italia_1980s": "/videos/italia80s.mp4",
     "brasil_1980s": "/videos/brazil.mp4",
+    "usa_1970s": "/videos/usa70sprev.mp4",
 }
 
 export default function EraSelectionStep({ onEraSelected }: EraSelectionStepProps) {
