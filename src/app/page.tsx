@@ -3,7 +3,7 @@ import HeroSection from "../components/landing/hero-section"
 import FeaturesSection from "../components/landing/features-section"
 import VideoExamplesSection from "../components/landing/video-examples-section"
 import VideoCreationDemo from "../components/landing/video-creation-demo"
-import PricingSection from "../components/landing/pricing-section"
+//import PricingSection from "../components/landing/pricing-section"
 import CallToActionSection from "../components/landing/call-to-action-section"
 import Footer from "../components/landing/footer"
 import AnimatedBackground from "../components/landing/animated-background"
@@ -18,7 +18,7 @@ export default function Home() {
         <VideoExamplesSection />
         <FeaturesSection />
         <VideoCreationDemo />
-        <PricingSection />
+        {/*<PricingSection />*/}
         <CallToActionSection />
         <Footer />
       </div>

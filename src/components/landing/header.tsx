@@ -46,9 +46,6 @@ export default function Header() {
             </a>
 
             <nav className="hidden md:flex items-center space-x-6 lg:space-x-8" role="navigation" aria-label="Main navigation">
-              <a href="#pricing" className="text-white/90 hover:text-white transition-colors text-sm font-medium" aria-label="View pricing plans">
-                Pricing
-              </a>
               <a href="/blog" className="text-white/90 hover:text-white transition-colors text-sm font-medium" aria-label="Read our blog">
                 Blog
               </a>
@@ -58,6 +55,9 @@ export default function Header() {
                 </a>
                 <Badge className={`bg-yellow-300 text-black ${isButtonHighlighted ? 'bg-white' : 'bg-yellow-500'} text-xs font-semibold px-2 py-1`} aria-label="New feature">New</Badge>
               </div>
+              <a href="#pricing" className="text-white/90 hidden hover:text-white transition-colors text-sm font-medium" aria-label="View pricing plans">
+                Pricing
+              </a>
             </nav>
 
             <div className="flex items-center space-x-3">
