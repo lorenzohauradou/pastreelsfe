@@ -344,6 +344,54 @@ export default function GenerationFlow({
         return startVideoGenerationWithAssets(selectedAssets)
     }
 
+    const pollProjectForFinalVideo = async () => {
+        try {
+            const { getProject } = await import("../lib/api")
+            let attempts = 0
+            const maxAttempts = 240 // 20 minuti max (5 secondi × 240) - video finale può richiedere tempo
+
+            const poll = async () => {
+                try {
+                    attempts++
+                    const updatedProject = await getProject(project!.id)
+
+                    if (updatedProject.final_video_url) {
+                        setStableVideoUrl(updatedProject.final_video_url)
+                        setCurrentPhase("completed")
+                        setCurrentMessage("🎬 Your cinematic video is ready!")
+                        setProgress(100)
+                        return
+                    }
+
+                    if (updatedProject.status === "failed") {
+                        throw new Error("Final video processing failed")
+                    }
+
+                    if (attempts >= maxAttempts) {
+                        throw new Error("Final video processing is taking longer than expected. Please check back later.")
+                    }
+
+                    //  polling
+                    setTimeout(poll, 5000) // ogni 5 secondi
+
+                } catch (error) {
+                    if (attempts < maxAttempts) {
+                        setTimeout(poll, 5000)
+                    } else {
+                        throw error
+                    }
+                }
+            }
+
+            poll()
+
+        } catch (error) {
+            console.error('Error polling for final video:', error)
+            setCurrentPhase("error")
+            setCurrentMessage(error instanceof Error ? error.message : "Error checking final video status")
+        }
+    }
+
     const handleVideoCreationPolling = async (taskId: string) => {
         try {
             // Poll for completion
@@ -354,6 +402,16 @@ export default function GenerationFlow({
                     setCurrentMessage(status.message || "Generating video...")
                 }
             )
+            // Nuovo workflow: video clips pronti, finale in background
+            if (finalStatus.result?.processing_final) {
+                setCurrentMessage("Video clips ready! Final video processing in background...")
+                setProgress(80)
+
+                // Inizia polling del progetto per video finale
+                await pollProjectForFinalVideo()
+                return
+            }
+
             // Check if final_video_url is directly in the result (unified workflow)
             if (finalStatus.result?.final_video_url) {
                 setStableVideoUrl(finalStatus.result.final_video_url)

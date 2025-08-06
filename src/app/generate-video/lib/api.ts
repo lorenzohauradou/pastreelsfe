@@ -217,7 +217,7 @@ export async function getTaskStatus(taskId: string): Promise<TaskStatus> {
 export async function pollTaskStatus(
   taskId: string,
   onProgress?: (status: TaskStatus) => void,
-  maxAttempts: number = 200, // Aumentato da 60 a 200 (10 minuti)
+  maxAttempts: number = 60, // il task si completa all'80% quando inizia a creare final_video
   interval: number = 3000
 ): Promise<TaskStatus> {
   let attempts = 0
@@ -266,7 +266,6 @@ export async function pollTaskStatus(
   })
 }
 
-// Error handling utility
 export class APIError extends Error {
   constructor(message: string, public status?: number) {
     super(message)
