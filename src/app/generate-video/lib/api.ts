@@ -217,7 +217,7 @@ export async function getTaskStatus(taskId: string): Promise<TaskStatus> {
 export async function pollTaskStatus(
   taskId: string,
   onProgress?: (status: TaskStatus) => void,
-  maxAttempts: number = 60,
+  maxAttempts: number = 200, // Aumentato da 60 a 200 (10 minuti)
   interval: number = 3000
 ): Promise<TaskStatus> {
   let attempts = 0
@@ -247,7 +247,7 @@ export async function pollTaskStatus(
         } else if (status.status === 'failed') {
           reject(new Error(status.message || 'Task failed'))
         } else if (attempts >= maxAttempts) {
-          reject(new Error(`Task polling timeout - no progress for ${Math.round(maxAttempts * interval / 1000 / 60)} minutes. Last progress: ${lastProgress}%`))
+          reject(new Error(`Task timeout after ${Math.round(maxAttempts * interval / 1000 / 60)} minutes. Video processing may take longer than expected. Last progress: ${lastProgress}%`))
         } else {
           setTimeout(poll, interval)
         }
